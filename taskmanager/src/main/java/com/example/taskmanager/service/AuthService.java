@@ -1,0 +1,43 @@
+package com.example.taskmanager.service;
+
+import com.example.taskmanager.dto.AuthDTO;
+import com.example.taskmanager.dto.RegisterDTO;
+import com.example.taskmanager.model.User;
+import com.example.taskmanager.repository.UserRepository;
+import com.example.taskmanager.security.JwtUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+@Service
+public class AuthService {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    public AuthDTO register(RegisterDTO request) {
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new RuntimeException("Username already exists");
+        }
+
+        User user = new User();
+        user.setUsername(request.getUsername());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        userRepository.save(user);
+
+        String token = jwtUtil.generateToken(user.getUsername());
+        return new AuthDTO(token, user.getUsername());
+    }
+
+
+}
