@@ -1,12 +1,14 @@
 package com.example.taskmanager.service;
 
 import com.example.taskmanager.dto.AuthDTO;
+import com.example.taskmanager.dto.LoginDTO;
 import com.example.taskmanager.dto.RegisterDTO;
 import com.example.taskmanager.model.User;
 import com.example.taskmanager.repository.UserRepository;
 import com.example.taskmanager.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -39,5 +41,11 @@ public class AuthService {
         return new AuthDTO(token, user.getUsername());
     }
 
-
+    public AuthDTO login(LoginDTO request){
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+        );
+        String token = jwtUtil.generateToken(request.getUsername());
+        return new AuthDTO(token, request.getUsername());
+    }
 }

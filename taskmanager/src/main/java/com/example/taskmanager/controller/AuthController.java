@@ -2,6 +2,7 @@ package com.example.taskmanager.controller;
 
 
 import com.example.taskmanager.dto.AuthDTO;
+import com.example.taskmanager.dto.LoginDTO;
 import com.example.taskmanager.dto.RegisterDTO;
 import com.example.taskmanager.service.AuthService;
 import jakarta.validation.Valid;
@@ -21,5 +22,8 @@ public class AuthController {
         return ResponseEntity.ok(authService.register(request));
     }
 
-
+    @PostMapping("/login")
+    public ResponseEntity<AuthDTO> login(@Valid @RequestBody LoginDTO request) {
+        return ResponseEntity.ok(authService.login(request));
+    }
 }
