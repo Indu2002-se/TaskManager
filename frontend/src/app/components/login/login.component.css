@@ -4,6 +4,40 @@
   align-items: center;
   min-height: 100vh;
   padding: 20px;
+  position: relative;
+}
+
+/* Toast Notification */
+.toast-notification {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+  color: white;
+  padding: 16px 24px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(238, 90, 111, 0.4);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 1000;
+
+  min-width: 300px;
+  max-width: 500px;
+}
+
+
+
+.toast-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.toast-message {
+  font-size: 14px;
+  font-weight: 500;
+  flex: 1;
 }
 
 .form-wrapper {

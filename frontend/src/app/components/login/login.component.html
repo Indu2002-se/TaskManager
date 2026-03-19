@@ -1,4 +1,12 @@
 <div class="container">
+  <!-- Toast Notification -->
+  @if (showToast && errorMessage) {
+    <div class="toast-notification">
+      <span class="toast-icon">⚠️</span>
+      <span class="toast-message">{{ errorMessage }}</span>
+    </div>
+  }
+
   <div class="form-wrapper">
     <h2>Login</h2>
     
@@ -31,12 +39,8 @@
         }
       </div>
 
-      @if (errorMessage) {
-        <div class="alert-error">{{ errorMessage }}</div>
-      }
-
-      <button type="submit" [disabled]="isLoading" class="btn-primary">
-        {{ isLoading ? 'Logging in...' : 'Login' }}
+      <button type="submit" class="btn-primary">
+        Login
       </button>
     </form>
 
