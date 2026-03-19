@@ -1,0 +1,44 @@
+<div class="container">
+  @if (errorMessage) {
+    <div class="alert-error">{{ errorMessage }}</div>
+  }
+
+  @if (task) {
+    <div class="details-wrapper">
+      <div class="header">
+        <h2>Task Details</h2>
+        <div class="actions">
+          <button [routerLink]="['/tasks/edit', task.id]" class="btn-primary">Edit</button>
+          <button (click)="deleteTask()" class="btn-danger">Delete</button>
+          <button routerLink="/tasks" class="btn-secondary">Back to List</button>
+        </div>
+      </div>
+
+      <div class="detail-row">
+        <label>Title:</label>
+        <div class="value">{{ task.title }}</div>
+      </div>
+
+      <div class="detail-row">
+        <label>Description:</label>
+        <div class="value">{{ task.description || 'No description provided' }}</div>
+      </div>
+
+      <div class="detail-row">
+        <label>Status:</label>
+        <div class="value">
+          <span class="status-badge" [class]="'status-' + task.status.toLowerCase()">
+            {{ task.status.replace('_', ' ') }}
+          </span>
+        </div>
+      </div>
+
+      <div class="detail-row">
+        <label>Created At:</label>
+        <div class="value">{{ task.createdAt | date:'full' }}</div>
+      </div>
+    </div>
+  } @else {
+    <div class="loading">Loading task details...</div>
+  }
+</div>

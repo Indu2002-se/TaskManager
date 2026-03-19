@@ -1,0 +1,66 @@
+<div class="container">
+  <div class="header">
+    <h1>Task Manager</h1>
+    <div class="header-actions">
+      <span class="username">Welcome, {{ username }}</span>
+      <button (click)="logout()" class="btn-secondary">Logout</button>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <div class="filter-group">
+      <label for="statusFilter">Filter by Status:</label>
+      <select 
+        id="statusFilter" 
+        [(ngModel)]="selectedStatus" 
+        (change)="onStatusFilterChange()"
+        class="form-control">
+        @for (status of taskStatuses; track status.value) {
+          <option [value]="status.value">{{ status.label }}</option>
+        }
+      </select>
+    </div>
+    <button routerLink="/tasks/new" class="btn-primary">Add New Task</button>
+  </div>
+
+  @if (errorMessage) {
+    <div class="alert-error">{{ errorMessage }}</div>
+  }
+
+  @if (filteredTasks.length === 0) {
+    <div class="empty-state">
+      <p>No tasks found. Create your first task!</p>
+    </div>
+  } @else {
+    <table class="task-table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Status</th>
+          <th>Created At</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (task of filteredTasks; track task.id) {
+          <tr>
+            <td>{{ task.title }}</td>
+            <td>{{ task.description || '-' }}</td>
+            <td>
+              <span class="status-badge" [class]="'status-' + task.status.toLowerCase()">
+                {{ task.status.replace('_', ' ') }}
+              </span>
+            </td>
+            <td>{{ task.createdAt | date:'short' }}</td>
+            <td class="actions">
+              <button [routerLink]="['/tasks', task.id]" class="btn-link">View</button>
+              <button [routerLink]="['/tasks/edit', task.id]" class="btn-link">Edit</button>
+              <button (click)="deleteTask(task.id)" class="btn-link danger">Delete</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>
