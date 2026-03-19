@@ -24,7 +24,16 @@ export class TaskDetailsComponent implements OnInit {
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
-      this.loadTask(+id);
+      const taskId = +id;
+      
+      // Try to get cached task first for instant display
+      const cachedTask = this.taskService.getCachedTask(taskId);
+      if (cachedTask) {
+        this.task = cachedTask;
+      }
+      
+      // Then fetch from server to ensure data is fresh
+      this.loadTask(taskId);
     }
   }
 
@@ -34,7 +43,9 @@ export class TaskDetailsComponent implements OnInit {
         this.task = task;
       },
       error: (error) => {
-        this.errorMessage = 'Failed to load task';
+        if (!this.task) {
+          this.errorMessage = 'Failed to load task';
+        }
         console.error(error);
       }
     });

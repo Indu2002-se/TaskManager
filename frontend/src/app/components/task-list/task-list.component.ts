@@ -35,6 +35,12 @@ export class TaskListComponent implements OnInit {
 
   ngOnInit(): void {
     this.username = this.authService.getUsername();
+    
+    // Load cached tasks immediately for instant display
+    this.tasks = this.taskService.getCachedTasks();
+    this.filterTasks();
+    
+    // Then fetch fresh data from server
     this.loadTasks();
   }
 
@@ -45,7 +51,9 @@ export class TaskListComponent implements OnInit {
         this.filterTasks();
       },
       error: (error) => {
-        this.errorMessage = 'Failed to load tasks';
+        if (this.tasks.length === 0) {
+          this.errorMessage = 'Failed to load tasks';
+        }
         console.error(error);
       }
     });
@@ -69,7 +77,9 @@ export class TaskListComponent implements OnInit {
     if (confirm('Are you sure you want to delete this task?')) {
       this.taskService.deleteTask(id).subscribe({
         next: () => {
-          this.loadTasks();
+          // Cache is already updated by service, just refresh the view
+          this.tasks = this.taskService.getCachedTasks();
+          this.filterTasks();
         },
         error: (error) => {
           this.errorMessage = 'Failed to delete task';
