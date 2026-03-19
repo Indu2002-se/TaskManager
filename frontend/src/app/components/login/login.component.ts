@@ -28,19 +28,44 @@ export class LoginComponent {
   }
 
   onSubmit(): void {
+    // Clear previous error message
+    this.errorMessage = '';
+    
     if (this.loginForm.valid) {
       this.isLoading = true;
-      this.errorMessage = '';
       
       this.authService.login(this.loginForm.value).subscribe({
         next: () => {
+          this.isLoading = false;
           this.router.navigate(['/tasks']);
         },
         error: (error) => {
           this.isLoading = false;
-          this.errorMessage = error.error?.message || 'Login failed. Please check your credentials.';
+          console.error('Login error:', error);
+          
+          // Handle different error scenarios
+          if (error.status === 0) {
+            this.errorMessage = 'Cannot connect to server. Please check if the backend is running.';
+          } else if (error.status === 401) {
+            this.errorMessage = 'Invalid username or password.';
+          } else if (error.error?.message) {
+            this.errorMessage = error.error.message;
+          } else if (error.message) {
+            this.errorMessage = error.message;
+          } else {
+            this.errorMessage = 'Login failed. Please try again.';
+          }
+          
+          // Force change detection
+          setTimeout(() => {}, 0);
         }
       });
+    } else {
+      // Mark all fields as touched to show validation errors
+      Object.keys(this.loginForm.controls).forEach(key => {
+        this.loginForm.get(key)?.markAsTouched();
+      });
+      this.errorMessage = 'Please fill in all required fields.';
     }
   }
 
