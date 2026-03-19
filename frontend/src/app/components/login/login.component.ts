@@ -14,7 +14,7 @@ import { AuthService } from '../../services/auth.service';
 export class LoginComponent {
   loginForm: FormGroup;
   errorMessage = '';
-  isLoading = false;
+  showToast = false;
 
   constructor(
     private fb: FormBuilder,
@@ -27,37 +27,38 @@ export class LoginComponent {
     });
   }
 
+  private showErrorToast(message: string): void {
+    this.errorMessage = message;
+    this.showToast = true;
+    setTimeout(() => {
+      this.showToast = false;
+    }, 4000);
+  }
+
   onSubmit(): void {
-    // Clear previous error message
-    this.errorMessage = '';
-    
     if (this.loginForm.valid) {
-      this.isLoading = true;
-      
       this.authService.login(this.loginForm.value).subscribe({
         next: () => {
-          this.isLoading = false;
           this.router.navigate(['/tasks']);
         },
         error: (error) => {
-          this.isLoading = false;
           console.error('Login error:', error);
           
           // Handle different error scenarios
+          let message = '';
           if (error.status === 0) {
-            this.errorMessage = 'Cannot connect to server. Please check if the backend is running.';
+            message = 'Cannot connect to server. Please check if the backend is running.';
           } else if (error.status === 401) {
-            this.errorMessage = 'Invalid username or password.';
+            message = 'Invalid username or password.';
           } else if (error.error?.message) {
-            this.errorMessage = error.error.message;
+            message = error.error.message;
           } else if (error.message) {
-            this.errorMessage = error.message;
+            message = error.message;
           } else {
-            this.errorMessage = 'Login failed. Please try again.';
+            message = 'Login failed. Please try again.';
           }
           
-          // Force change detection
-          setTimeout(() => {}, 0);
+          this.showErrorToast(message);
         }
       });
     } else {
@@ -65,7 +66,7 @@ export class LoginComponent {
       Object.keys(this.loginForm.controls).forEach(key => {
         this.loginForm.get(key)?.markAsTouched();
       });
-      this.errorMessage = 'Please fill in all required fields.';
+      this.showErrorToast('Please fill in all required fields.');
     }
   }
 
