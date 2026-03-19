@@ -7,7 +7,7 @@ import { AuthResponse, LoginRequest, RegisterRequest } from '../models/auth.mode
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:8080/api/auth';
+  private apiUrl = '/api/auth';
   private tokenKey = 'auth_token';
   private usernameKey = 'username';
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.hasToken());

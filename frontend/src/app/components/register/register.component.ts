@@ -34,12 +34,35 @@ export class RegisterComponent {
       
       this.authService.register(this.registerForm.value).subscribe({
         next: () => {
+          this.isLoading = false;
           this.router.navigate(['/tasks']);
         },
         error: (error) => {
           this.isLoading = false;
-          this.errorMessage = error.error?.message || 'Registration failed. Please try again.';
+          console.error('Registration error:', error);
+          
+          // Handle different error scenarios
+          if (error.status === 0) {
+            this.errorMessage = 'Cannot connect to server. Please check if the backend is running.';
+          } else if (error.status === 409) {
+            this.errorMessage = 'Username already exists. Please choose a different username.';
+          } else if (error.error?.message) {
+            this.errorMessage = error.error.message;
+          } else if (error.message) {
+            this.errorMessage = error.message;
+          } else {
+            this.errorMessage = 'Registration failed. Please try again.';
+          }
+        },
+        complete: () => {
+          // Ensure loading is always reset
+          this.isLoading = false;
         }
+      });
+    } else {
+      // Mark all fields as touched to show validation errors
+      Object.keys(this.registerForm.controls).forEach(key => {
+        this.registerForm.get(key)?.markAsTouched();
       });
     }
   }

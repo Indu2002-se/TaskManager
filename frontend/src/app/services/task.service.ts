@@ -7,7 +7,7 @@ import { Task } from '../models/task.model';
   providedIn: 'root'
 })
 export class TaskService {
-  private apiUrl = 'http://localhost:8080/api/tasks';
+  private apiUrl = '/api/tasks';
   private tasksCache$ = new BehaviorSubject<Task[]>([]);
   private taskDetailsCache = new Map<number, Task>();
 

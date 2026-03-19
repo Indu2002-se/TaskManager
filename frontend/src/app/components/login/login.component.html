@@ -35,7 +35,7 @@
         <div class="alert-error">{{ errorMessage }}</div>
       }
 
-      <button type="submit" [disabled]="loginForm.invalid || isLoading" class="btn-primary">
+      <button type="submit" [disabled]="isLoading" class="btn-primary">
         {{ isLoading ? 'Logging in...' : 'Login' }}
       </button>
     </form>
